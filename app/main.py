@@ -38,6 +38,14 @@ class PolizaResponse(BaseModel):
     class Config:
         from_attributes = True
 
+class PolizaUpdate(BaseModel):
+    numero_poliza: Optional[str] = None
+    tipo: Optional[str] = None
+    titular: Optional[str] = None
+    prima_mensual: Optional[float] = None
+    fecha_inicio: Optional[date] = None
+    fecha_vencimiento: Optional[date] = None
+    estado: Optional[str] = None
 
 # --- Endpoints ---
 
@@ -67,3 +75,16 @@ def obtener_poliza(poliza_id: int, db: Session = Depends(get_db)):
     if not poliza:
         raise HTTPException(status_code=404, detail="Póliza no encontrada")
     return poliza
+
+
+@app.put("/api/v1/polizas/{poliza_id}", response_model=PolizaResponse)
+def actualizar_poliza(poliza_id: int, poliza: PolizaUpdate, db: Session = Depends(get_db)):
+    db_poliza = db.query(models.Poliza).filter(models.Poliza.id == poliza_id).first()
+    if not db_poliza:
+        raise HTTPException(status_code=404, detail="Póliza no encontrada")
+    datos_actualizados = poliza.model_dump(exclude_unset=True)
+    for campo, valor in datos_actualizados.items():
+        setattr(db_poliza, campo, valor)
+    db.commit()
+    db.refresh(db_poliza)
+    return db_poliza
