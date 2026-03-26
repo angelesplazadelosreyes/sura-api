@@ -23,3 +23,6 @@ steps:
 
 images:
   - 'us-central1-docker.pkg.dev/sura-api-2026/sura-api-repo/sura-api:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
