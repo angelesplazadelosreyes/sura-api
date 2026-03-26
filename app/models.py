@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, Date, DateTime
+from sqlalchemy import Column, Integer, String, Float, Date, DateTime, ForeignKey
 from sqlalchemy.sql import func
 from app.database import Base
 
@@ -15,3 +15,17 @@ class Poliza(Base):
     fecha_vencimiento = Column(Date, nullable=False)
     estado = Column(String(20), nullable=False, default="vigente")
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+
+class Siniestro(Base):
+    __tablename__ = "siniestros"
+
+    id = Column(Integer, primary_key=True, index=True)
+    poliza_id = Column(Integer, ForeignKey("polizas.id"), nullable=False)
+    descripcion = Column(String(500), nullable=False)
+    estado = Column(String(20), nullable=False, default="pendiente")
+    fecha_siniestro = Column(Date, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
