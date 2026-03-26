@@ -1,0 +1,25 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/sura-api-2026/sura-api-repo/sura-api:latest'
+      - '.'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'us-central1-docker.pkg.dev/sura-api-2026/sura-api-repo/sura-api:latest'
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    args:
+      - 'gcloud'
+      - 'run'
+      - 'deploy'
+      - 'sura-api'
+      - '--image=us-central1-docker.pkg.dev/sura-api-2026/sura-api-repo/sura-api:latest'
+      - '--region=us-central1'
+      - '--platform=managed'
+
+images:
+  - 'us-central1-docker.pkg.dev/sura-api-2026/sura-api-repo/sura-api:latest'
